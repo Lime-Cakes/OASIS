@@ -7,6 +7,8 @@ from utils.fid_scores import fid_pytorch
 import config
 import time
 
+torch.backends.cudnn.benchmark = True
+
 #--- read options ---#
 opt = config.read_arguments(train=True)
 
