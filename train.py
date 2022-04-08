@@ -37,12 +37,12 @@ for epoch in range(start_epoch, opt.num_epochs):
             continue
         already_started = True
         cur_iter = epoch*len(dataloader) + i
-        ta=time.time()
+        #ta=time.time()
         image, label = models.preprocess_input(opt, data_i)
-        tb=time.time()
-        print ("Preprocess took {}".format(tb-ta) )
+        #tb=time.time()
+        #print ("Preprocess took {}".format(tb-ta) )
         
-        ta=time.time()
+        #ta=time.time()
         #--- generator update ---#
         model.module.netG.zero_grad()
         loss_G, losses_G_list = model(image, label, "losses_G", losses_computer)
@@ -50,10 +50,10 @@ for epoch in range(start_epoch, opt.num_epochs):
         loss_G.backward()
         optimizerG.step()
         
-        tb=time.time()
-        print ("generator took {}".format(tb-ta) )
+        #tb=time.time()
+        #print ("generator took {}".format(tb-ta) )
         
-        ta=time.time()
+        #ta=time.time()
         #--- discriminator update ---#
         model.module.netD.zero_grad()
         loss_D, losses_D_list = model(image, label, "losses_D", losses_computer)
@@ -61,8 +61,8 @@ for epoch in range(start_epoch, opt.num_epochs):
         loss_D.backward()
         optimizerD.step()
         
-        tb=time.time()
-        print ("discrminator took {}".format(tb-ta) )
+        #tb=time.time()
+        #print ("discrminator took {}".format(tb-ta) )
 
         #--- stats update ---#
         if not opt.no_EMA:
