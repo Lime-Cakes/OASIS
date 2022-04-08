@@ -1,5 +1,3 @@
-
-
 import torch
 import models.losses as losses
 import models.models as models
@@ -7,7 +5,7 @@ import dataloaders.dataloaders as dataloaders
 import utils.utils as utils
 from utils.fid_scores import fid_pytorch
 import config
-
+import time
 
 #--- read options ---#
 opt = config.read_arguments(train=True)
@@ -37,21 +35,32 @@ for epoch in range(start_epoch, opt.num_epochs):
             continue
         already_started = True
         cur_iter = epoch*len(dataloader) + i
+        ta=time.time()
         image, label = models.preprocess_input(opt, data_i)
-
+        tb=time.time()
+        print ("Preprocess took {}".format(tb-ta) )
+        
+        ta=time.time()
         #--- generator update ---#
         model.module.netG.zero_grad()
         loss_G, losses_G_list = model(image, label, "losses_G", losses_computer)
         loss_G, losses_G_list = loss_G.mean(), [loss.mean() if loss is not None else None for loss in losses_G_list]
         loss_G.backward()
         optimizerG.step()
-
+        
+        tb=time.time()
+        print ("generator took {}".format(tb-ta) )
+        
+        ta=time.time()
         #--- discriminator update ---#
         model.module.netD.zero_grad()
         loss_D, losses_D_list = model(image, label, "losses_D", losses_computer)
         loss_D, losses_D_list = loss_D.mean(), [loss.mean() if loss is not None else None for loss in losses_D_list]
         loss_D.backward()
         optimizerD.step()
+        
+        tb=time.time()
+        print ("discrminator took {}".format(tb-ta) )
 
         #--- stats update ---#
         if not opt.no_EMA:
